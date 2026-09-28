@@ -39,8 +39,11 @@ final List<Map<String, dynamic>> books = [
   },
 ];
 
+// Part 1
+// 1.1
 double lateFee(int daysLate, double ratePerDay) => daysLate * ratePerDay;
 
+// 1.2
 String formatTitle(String title, [String? author]) {
   if (author == null) {
     return title;
@@ -48,6 +51,7 @@ String formatTitle(String title, [String? author]) {
   return '$title by $author';
 }
 
+// 1.3
 Map<String, dynamic> makeBook(
     {required String title,
     required String author,
@@ -56,8 +60,11 @@ Map<String, dynamic> makeBook(
   return {'title': title, 'author': author, 'year': year, 'copies': copies};
 }
 
+// 1.4
 bool isClassic(int year) => year < 2000;
 
+// Part 2
+// 2.1
 List<String> transformAll(List<String> items, String Function(String) fn) {
   List<String> result = [];
   for (var item in items) {
@@ -66,6 +73,7 @@ List<String> transformAll(List<String> items, String Function(String) fn) {
   return result;
 }
 
+// 2.2
 int count = 0;
 
 int Function() makeCounter() {
@@ -75,10 +83,12 @@ int Function() makeCounter() {
   };
 }
 
+// 2.3
 double Function(int) makeFeeCalculator(double rate) {
   return (int days) => days * rate;
 }
 
+// 2.4
 int sumDigits(int n) {
   if (n < 10) {
     return n;
@@ -97,23 +107,29 @@ void main() async {
 
 void part1() {
   print('--- Part 1 ---');
+  // 1.1
   print('Late fee: ${lateFee(5, 0.5)}');
+  // 1.2
   print(formatTitle('Dart in Action'));
   print(formatTitle('Dart in Action', 'Ada'));
+  // 1.3
   print(makeBook(title: 'Clean Code', author: 'Martin'));
   print(makeBook(title: 'Algorithms', author: 'Knuth', year: 1968));
+  // 1.4
   print(isClassic(1968));
   print(isClassic(2021));
 }
 
 void part2() {
   print('--- Part 2 ---');
+  // 2.1
   var names = ['Dart in Action', 'Clean Code'];
   print(transformAll(names, (String s) {
     return s.toUpperCase();
   }));
   print(transformAll(names, (s) => '$s!'));
 
+  // 2.2
   var desk1 = makeCounter();
   var desk2 = makeCounter();
   print(desk1());
@@ -121,11 +137,13 @@ void part2() {
   print(desk1());
   print(desk2());
 
+  // 2.3
   var studentFee = makeFeeCalculator(0.25);
   var staffFee = makeFeeCalculator(0.10);
   print('Student fee: ${studentFee(4)}');
   print('Staff fee: ${staffFee(4)}');
 
+  // 2.4
   print('Sum of digits: ${sumDigits(2024)}');
 }
 

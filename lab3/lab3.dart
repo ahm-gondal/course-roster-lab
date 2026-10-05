@@ -23,7 +23,7 @@ class Dish {
   late int price;
 }
 
-// Step 2, 3
+// Step 2, 3, 8
 class MenuItem {
   String name;
   int price;
@@ -40,6 +40,8 @@ class MenuItem {
       : name = text.split(':')[0],
         price = int.parse(text.split(':')[1]);
 
+  @override
+  String toString() => '$name (Rs $price)';
 }
 // Think 2: If price final, we cannot change value after.
 // Final can set only one time before body run.
@@ -66,6 +68,95 @@ class OrderLog {
 // If not private, anyone make new object. 
 // Then singleton break.
 
+// Step 5, 6
+class OrderLine {
+  final MenuItem item;
+  final int qty;
+  final int total;
+  final int tax;
+
+  OrderLine(this.item, this.qty)
+      : total = item.price * qty,
+        tax = item.price * qty * taxPercent ~/ 100,
+        assert(qty > 0, 'qty must be positive');
+
+  int get grand => total + tax;
+
+  bool get isBigOrder => grand > bigOrderLimit;
+
+  String get label => '${item.name} x$qty';
+}
+// Think 5: Object not fully make yet when initializer list run. 
+// So cannot use this or other field. Only can use constructor parameters there.
+OrderLine mainOrder() {
+  return OrderLine(MenuItem(menu[u], priceOf(u)), 2 + (t + u) % 5);
+}
+
+// Step 7
+class StudentCard {
+  final String owner;
+  int _balance;
+
+  StudentCard(this.owner) : _balance = 0;
+
+  int get balance => _balance;
+
+  set balance(int v) {
+    if (v > balanceCap) {
+      _balance = balanceCap;
+    }
+    if (v < 0) {
+      _balance = 0;
+    } else {
+      _balance = v;
+    }
+  }
+}
+// Think 7:// Setter can throw error too, Like ArgumentError.
+// It not fix value itself. It show error instead.
+
+// Step 8
+List<MenuItem> buildMenu() {
+  return [
+    for (var k = 0; k < 4; k++)
+      MenuItem.fromString(
+          '${menu[(u + 3 * k) % 10]}:${priceOf((u + 3 * k) % 10)}')
+  ];
+}
+
+// Step 9
+List<OrderLine> buildReceipt() {
+  var items = buildMenu();
+  List<OrderLine> lines = [];
+  for (var k = 0; k < 3; k++) {
+    lines.add(OrderLine(items[k], 1 + (t + k) % 4));
+  }
+  return lines;
+}
+
+// Step 10
+class Coupon {
+  static final Map<String, Coupon> _cache = {};
+
+  final String code;
+  final int percent;
+  final int minSpend;
+
+  Coupon(this.code, this.percent)
+      : minSpend = percent * 70,
+        assert(percent >= 1 && percent <= 50);
+
+  factory Coupon.fromCode(String code) {
+    return _cache.putIfAbsent(code, () => Coupon(code, couponPercent));
+  }
+
+  int discountOn(int amount) {
+    if (amount >= minSpend) {
+      return amount * percent ~/ 100;
+    }
+    return 0;
+  }
+}
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -131,9 +222,88 @@ void step4() {
   print('Step 4: last = ${log2.entries.last}');
 }
 
-void step5() { print('--- Step 5 ---'); }
-void step6() { print('--- Step 6 ---'); }
-void step7() { print('--- Step 7 ---'); }
-void step8() { print('--- Step 8 ---'); }
-void step9() { print('--- Step 9 ---'); }
-void step10() { print('--- Step 10 ---'); }
+void step5() {
+  print('--- Step 5 ---');
+  var line = mainOrder();
+  print('Step 5: ${line.item.name} x${line.qty}');
+  print('Step 5: total=${line.total} tax=${line.tax}');
+  try {
+    OrderLine(line.item, 0);
+    print('Step 5: assert did NOT fire');
+  } on AssertionError {
+    print('Step 5: assert fired');
+  }
+}
+
+void step6() {
+  print('--- Step 6 ---');
+  var line = mainOrder();
+  print('Step 6: grand=${line.grand}');
+  print('Step 6: big order? ${line.isBigOrder} (limit $bigOrderLimit)');
+  print('Step 6: label=${line.label}');
+}
+
+void step7() {
+  print('--- Step 7 ---');
+  var card = StudentCard('S$seed');
+  card.balance = seed * 10 + 50;
+  print('Step 7: topped up -> ${card.balance}');
+  card.balance = -seed - 1;
+  print('Step 7: bad value -> ${card.balance}');
+  card.balance = balanceCap - u;
+  print('Step 7: reset -> ${card.balance}');
+  card.balance = card.balance - mainOrder().grand;
+  print('Step 7: paid order -> ${card.balance}');
+}
+
+void step8() {
+  print('--- Step 8 ---');
+  var items = buildMenu();
+  var priciest = items.reduce((a, b) => a.price < b.price ? a : b);
+  int sum = items.fold(0, (s, item) => s + item.price);
+  print('Step 8: menu = $items');
+  print('Step 8: priciest = ${priciest.name}');
+  print('Step 8: sum = $sum');
+}
+
+void step9() {
+  print('--- Step 9 ---');
+  var receipt = buildReceipt();
+  int total = 0;
+  for (var line in receipt) {
+    print('Step 9: ${line.label} = ${line.grand}');
+    OrderLog().add('receipt: ${line.label}');
+    total += line.grand;
+  }
+  print('Step 9: receipt total = $total');
+  print('Step 9: log size = ${OrderLog().entries.length}');
+}
+
+void step10() {
+  print('--- Step 10 ---');
+  String code = 'CAFE${seed.toString().padLeft(2, '0')}';
+  var c1 = Coupon.fromCode(code);
+  var c2 = Coupon.fromCode(code);
+  int receipt = 0;
+  for (var line in buildReceipt()) {
+    receipt += line.grand;
+  }
+  int discount = c1.discountOn(receipt);
+  print('Step 10: $code gives ${c1.percent}% off, min spend ${c1.minSpend}');
+  print('Step 10: cached? ${identical(c1, c2)}');
+  print('Step 10: receipt $receipt, discount $discount, payable ${receipt - discount}');
+}
+
+// Reflection
+// Q1. Shorthand help us. No need write this.name = name many time. 
+// Code small and less mistake come. 
+     
+// Q2. Named constructor use when want make object another way, like from string.
+//     Factory use when want return same object or old object,  
+//     not make new object every time.
+
+// Q3. Initializer list run first before body. It can set final field. 
+// Body run later after object make. Body cannot set final field.
+
+// Q4. Getter good when value come from other fields
+// Value always correct and update.

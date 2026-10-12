@@ -26,10 +26,21 @@ final int shelfSize = 3 + u % 4;            // items on the shelf in Steps 9-10
 
 // Step 1, 2, 3
 abstract class LibraryItem {
+  static int created = 0;
+
   final String title;
   final int year;
 
-  LibraryItem(this.title, this.year);
+  LibraryItem(this.title, this.year) {
+    created++;
+  }
+
+  static int capFee(int fee) {
+    if (fee > feeCap) {
+      return feeCap;
+    }
+    return fee;
+  }
 
   String describe() => '$title ($year)';
 
@@ -171,6 +182,22 @@ class Fine {
   String toString() => 'Fine($amount)';
 }
 
+// Step 9
+List<LibraryItem> buildShelf() {
+  List<LibraryItem> shelf = [];
+  for (var k = 0; k < shelfSize; k++) {
+    int i = (u + k) % 10;
+    if (k % 3 == 0) {
+      shelf.add(Book(titles[i], yearOf(i), 100 + 3 * seed));
+    } else if (k % 3 == 1) {
+      shelf.add(Magazine(titles[i], yearOf(i), 1 + (t + k) % 12));
+    } else {
+      shelf.add(Dvd(titles[i], yearOf(i), 90 + seed % 40));
+    }
+  }
+  return shelf;
+}
+
 // Think 4: extends Borrowable give nothing really because it has no body,
 // and Book already extends LibraryItem, Dart allow only one extends.
 // implements is just promise, we write own code.
@@ -186,6 +213,9 @@ class Fine {
 
 // Think 8: Without hashCode set size become 3 because two equal Fine have
 // different hash, set put them in different place. == and hashCode must agree.
+
+// Think 9: static belong to class not object, so we use class name
+// LibraryItem.created, no object needed.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -274,5 +304,13 @@ void step8() {
   print('Step 8: equal copies? ${f1 == Fine(f1.amount)}');
   print('Step 8: set size = ${{f1, Fine(f1.amount), f2}.length}');
 }
-void step9() { print('--- Step 9 ---'); }
+void step9() {
+  print('--- Step 9 ---');
+  buildShelf();
+  var shelf = buildShelf();
+  print('Step 9: items created = ${LibraryItem.created}');
+  print('Step 9: capped fee = ${LibraryItem.capFee(shelf.first.lateFee(daysBig))} (cap $feeCap)');
+  print('Step 9: const copies identical? ${identical(const Fine(10), const Fine(10))}');
+  print('Step 9: new copies identical? ${identical(Fine(10), Fine(10))}');
+}
 void step10() { print('--- Step 10 ---'); }

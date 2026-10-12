@@ -24,26 +24,49 @@ final int renewAttempts = 2 + u;            // renewal attempts made in Step 5
 final int shelfSize = 3 + u % 4;            // items on the shelf in Steps 9-10
 // ===========================================================================
 
-// Step 1
+// Step 1, 2
 class LibraryItem {
   final String title;
   final int year;
 
   LibraryItem(this.title, this.year);
+
+  String describe() => '$title ($year)';
 }
 
 class Book extends LibraryItem {
   final int pages;
 
   Book(super.title, super.year, this.pages);
+
+  @override
+  String describe() => '${super.describe()}, $pages pages';
+}
+
+// Step 2
+class Magazine extends LibraryItem {
+  final int issue;
+
+  Magazine(super.title, super.year, this.issue);
+
+  @override
+  String describe() => '$title, issue $issue';
 }
 
 Book mainBook() {
   return Book(titles[u], yearOf(u), 100 + 3 * seed);
 }
 
+Magazine mainMagazine() {
+  int i = (u + 1) % 10;
+  return Magazine(titles[i], yearOf(i), 1 + (t + u) % 12);
+}
+
 // Think 1: item type is LibraryItem so compiler only see title and year.
 // pages is only in Book, compiler dont know item is Book so error come.
+
+// Think 2: Without @override and name descibe() it become new method.
+// describe() of parent run so pages not print, no error show.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -68,7 +91,11 @@ void step1() {
   print('Step 1: runtimeType = ${item.runtimeType}');
 }
 
-void step2() { print('--- Step 2 ---'); }
+void step2() {
+  print('--- Step 2 ---');
+  print('Step 2: ${mainBook().describe()}');
+  print('Step 2: ${mainMagazine().describe()}');
+}
 void step3() { print('--- Step 3 ---'); }
 void step4() { print('--- Step 4 ---'); }
 void step5() { print('--- Step 5 ---'); }

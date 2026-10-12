@@ -198,6 +198,21 @@ List<LibraryItem> buildShelf() {
   return shelf;
 }
 
+// Step 10
+class Member {
+  final String name;
+  final MemberType type;
+
+  Member(this.name, this.type);
+
+  Fine feeFor(LibraryItem item, int days) {
+    int fee = item.lateFee(days);
+    fee = LibraryItem.capFee(fee);
+    fee = type.applyDiscount(fee);
+    return Fine(fee);
+  }
+}
+
 // Think 4: extends Borrowable give nothing really because it has no body,
 // and Book already extends LibraryItem, Dart allow only one extends.
 // implements is just promise, we write own code.
@@ -313,4 +328,22 @@ void step9() {
   print('Step 9: const copies identical? ${identical(const Fine(10), const Fine(10))}');
   print('Step 9: new copies identical? ${identical(Fine(10), Fine(10))}');
 }
-void step10() { print('--- Step 10 ---'); }
+void step10() {
+  print('--- Step 10 ---');
+  var shelf = buildShelf();
+  var member = Member('S$seed', MemberType.values[seed % 3]);
+  Fine total = shelf.fold(Fine(0), (sum, item) => sum + member.feeFor(item, daysLate));
+  int b = 0;
+  int r = 0;
+  for (var item in shelf) {
+    if (item is Borrowable) {
+      b++;
+    }
+    if (item is Renewable) {
+      r++;
+    }
+  }
+  print('Step 10: ${shelf.length} items, $b borrowable, $r renewable');
+  print('Step 10: ${member.name} (${member.type.name}) owes $total');
+  print('Step 10: over the cap? ${total > Fine(feeCap)}');
+}

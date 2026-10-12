@@ -43,7 +43,20 @@ abstract class Borrowable {
   void giveBack();
 }
 
-class Book extends LibraryItem implements Borrowable {
+// Step 5
+mixin Renewable {
+  int renewals = 0;
+
+  bool renew(int limit) {
+    if (renewals >= limit) {
+      return false;
+    }
+    renewals++;
+    return true;
+  }
+}
+
+class Book extends LibraryItem with Renewable implements Borrowable {
   final int pages;
   bool _out = false;
 
@@ -83,7 +96,7 @@ class Magazine extends LibraryItem {
 }
 
 // Step 3
-class Dvd extends LibraryItem {
+class Dvd extends LibraryItem with Renewable {
   final int minutes;
 
   Dvd(super.title, super.year, this.minutes);
@@ -116,6 +129,9 @@ Dvd mainDvd() {
 // Think 4: extends Borrowable give nothing really because it has no body,
 // and Book already extends LibraryItem, Dart allow only one extends.
 // implements is just promise, we write own code.
+
+// Think 5: If renew is in LibraryItem then Magazine also get it but it
+// should not. Mixin only add it to Book and Dvd which we want.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -165,7 +181,19 @@ void step4() {
     print('Step 4: ${item.runtimeType} borrowable? ${item is Borrowable}');
   }
 }
-void step5() { print('--- Step 5 ---'); }
+void step5() {
+  print('--- Step 5 ---');
+  var book = mainBook();
+  int ok = 0;
+  for (var i = 0; i < renewAttempts; i++) {
+    if (book.renew(renewLimit)) {
+      ok++;
+    }
+  }
+  print('Step 5: renewed $ok of $renewAttempts attempts (limit $renewLimit)');
+  print('Step 5: renew once more? ${book.renew(renewLimit)}');
+  print('Step 5: dvd can renew too? ${mainDvd().renew(1)}');
+}
 void step6() { print('--- Step 6 ---'); }
 void step7() { print('--- Step 7 ---'); }
 void step8() { print('--- Step 8 ---'); }

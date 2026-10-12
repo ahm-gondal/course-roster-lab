@@ -139,6 +139,19 @@ enum MemberType {
   int applyDiscount(int fee) => fee - fee * discountPercent ~/ 100;
 }
 
+// Step 7
+extension MoneyText on int {
+  String get rs => 'Rs $this';
+}
+
+extension Initials on String {
+  String get initials => split(' ').map((w) => w[0]).join();
+}
+
+extension ShelfMath on List<LibraryItem> {
+  int totalLateFee(int days) => fold(0, (sum, i) => sum + i.lateFee(days));
+}
+
 // Think 4: extends Borrowable give nothing really because it has no body,
 // and Book already extends LibraryItem, Dart allow only one extends.
 // implements is just promise, we write own code.
@@ -148,6 +161,9 @@ enum MemberType {
 
 // Think 6: string 'student' can be typed wrong like 'studnet' and no error.
 // Enum is checked by compiler so mistake caught early.
+
+// Think 7: 72.rs read like normal english and IDE show it after dot,
+// it look like int have this method already.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -218,7 +234,15 @@ void step6() {
   print('Step 6: max loans = ${type.maxLoans}');
   print('Step 6: book fee $fee -> ${type.applyDiscount(fee)} after discount');
 }
-void step7() { print('--- Step 7 ---'); }
+void step7() {
+  print('--- Step 7 ---');
+  var type = MemberType.values[seed % 3];
+  int discounted = type.applyDiscount(mainBook().lateFee(daysLate));
+  List<LibraryItem> shelf = [mainBook(), mainMagazine(), mainDvd()];
+  print('Step 7: ${discounted.rs}');
+  print('Step 7: initials of "${titles[u]}" = ${titles[u].initials}');
+  print('Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}');
+}
 void step8() { print('--- Step 8 ---'); }
 void step9() { print('--- Step 9 ---'); }
 void step10() { print('--- Step 10 ---'); }

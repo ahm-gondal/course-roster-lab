@@ -1,0 +1,45 @@
+Seed: 22 (t=2, u=2)
+--- Step 1 ---
+Step 1: Data Structures (2001), 166 pages
+Step 1: stored as LibraryItem: Data Structures
+Step 1: runtimeType = Book
+--- Step 2 ---
+Step 2: Data Structures (2001), 166 pages
+Step 2: Operating Systems, issue 5
+--- Step 3 ---
+Step 3: Book late fee for 7 days = 49
+Step 3: Magazine late fee for 7 days = 21
+Step 3: Dvd late fee for 7 days = 98
+--- Step 4 ---
+Step 4: available? true
+Step 4: after borrow? false
+Step 4: after return? true
+Step 4: Book borrowable? true
+Step 4: Magazine borrowable? false
+Step 4: Dvd borrowable? false
+--- Step 5 ---
+Step 5: renewed 3 of 4 attempts (limit 3)
+Step 5: renew once more? false
+Step 5: dvd can renew too? true
+--- Step 6 ---
+Step 6: member type = faculty (index 1)
+Step 6: max loans = 10
+Step 6: book fee 49 -> 40 after discount
+--- Step 7 ---
+Step 7: Rs 40
+Step 7: initials of "Data Structures" = DS
+Step 7: shelf fee for 7 days = Rs 168
+--- Step 8 ---
+Step 8: Fine(49) + Fine(21) = Fine(70)
+Step 8: first bigger? true
+Step 8: equal copies? true
+Step 8: set size = 2
+--- Step 9 ---
+Step 9: items created = 28
+Step 9: capped fee = 84 (cap 170)
+Step 9: const copies identical? true
+Step 9: new copies identical? false
+--- Step 10 ---
+Step 10: 5 items, 2 borrowable, 3 renewable
+Step 10: S22 (faculty) owes Fine(193)
+Step 10: over the cap? true

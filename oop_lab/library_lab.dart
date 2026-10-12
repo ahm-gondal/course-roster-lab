@@ -1,27 +1,34 @@
 // library_lab.dart  -  Campus Library System
 // Name: Ahmed Hassaan   Roll no: 04072313022
 
-const String rollNo = '04072313022';   // e.g. '21F-0347'
+const String rollNo = '04072313022'; // e.g. '21F-0347'
 
 // ===== Seeded settings (generated from YOUR roll number). Do not edit. =====
 final int seed = int.parse(rollNo.substring(rollNo.length - 2));
-final int t = seed ~/ 10;   // tens digit
-final int u = seed % 10;    // units digit
+final int t = seed ~/ 10; // tens digit
+final int u = seed % 10; // units digit
 
 const List<String> titles = [
-  'Dart Basics', 'Flutter In Action', 'Data Structures', 'Operating Systems',
-  'Mobile Design', 'Clean Code', 'Algorithms Unlocked', 'Computer Networks',
-  'Database Systems', 'Software Testing',
+  'Dart Basics',
+  'Flutter In Action',
+  'Data Structures',
+  'Operating Systems',
+  'Mobile Design',
+  'Clean Code',
+  'Algorithms Unlocked',
+  'Computer Networks',
+  'Database Systems',
+  'Software Testing',
 ];
 
-int yearOf(int i) => 1995 + 2 * i + t;      // publication year of titles[i]
-final int feePerDay = 5 + t;                // late fee per day, in rupees
-final int daysLate = 3 + (t + u) % 6;       // normal number of days late
-final int daysBig = 10 + u;                 // a long overdue period
-final int feeCap = 150 + 10 * t;            // no single fee may exceed this
-final int renewLimit = 1 + t % 3;           // renewals allowed per item
-final int renewAttempts = 2 + u;            // renewal attempts made in Step 5
-final int shelfSize = 3 + u % 4;            // items on the shelf in Steps 9-10
+int yearOf(int i) => 1995 + 2 * i + t; // publication year of titles[i]
+final int feePerDay = 5 + t; // late fee per day, in rupees
+final int daysLate = 3 + (t + u) % 6; // normal number of days late
+final int daysBig = 10 + u; // a long overdue period
+final int feeCap = 150 + 10 * t; // no single fee may exceed this
+final int renewLimit = 1 + t % 3; // renewals allowed per item
+final int renewAttempts = 2 + u; // renewal attempts made in Step 5
+final int shelfSize = 3 + u % 4; // items on the shelf in Steps 9-10
 // ===========================================================================
 
 // Step 1, 2, 3
@@ -111,18 +118,21 @@ class Dvd extends LibraryItem with Renewable {
   final int minutes;
 
   Dvd(super.title, super.year, this.minutes);
- @override
+  @override
   String describe() => '${super.describe()}, $minutes min';
- @override
+  @override
   int lateFee(int days) => days * feePerDay * 2;
 }
+
 Book mainBook() {
   return Book(titles[u], yearOf(u), 100 + 3 * seed);
 }
+
 Magazine mainMagazine() {
   int i = (u + 1) % 10;
   return Magazine(titles[i], yearOf(i), 1 + (t + u) % 12);
 }
+
 Dvd mainDvd() {
   int i = (u + 2) % 10;
   return Dvd(titles[i], yearOf(i), 90 + seed % 40);
@@ -260,12 +270,20 @@ void step2() {
   print('Step 2: ${mainBook().describe()}');
   print('Step 2: ${mainMagazine().describe()}');
 }
+
 void step3() {
   print('--- Step 3 ---');
-  print('Step 3: Book late fee for $daysLate days = ${mainBook().lateFee(daysLate)}');
-  print('Step 3: Magazine late fee for $daysLate days = ${mainMagazine().lateFee(daysLate)}');
-  print('Step 3: Dvd late fee for $daysLate days = ${mainDvd().lateFee(daysLate)}');
+  print(
+    'Step 3: Book late fee for $daysLate days = ${mainBook().lateFee(daysLate)}',
+  );
+  print(
+    'Step 3: Magazine late fee for $daysLate days = ${mainMagazine().lateFee(daysLate)}',
+  );
+  print(
+    'Step 3: Dvd late fee for $daysLate days = ${mainDvd().lateFee(daysLate)}',
+  );
 }
+
 void step4() {
   print('--- Step 4 ---');
   var book = mainBook();
@@ -280,6 +298,7 @@ void step4() {
     print('Step 4: ${item.runtimeType} borrowable? ${item is Borrowable}');
   }
 }
+
 void step5() {
   print('--- Step 5 ---');
   var book = mainBook();
@@ -293,6 +312,7 @@ void step5() {
   print('Step 5: renew once more? ${book.renew(renewLimit)}');
   print('Step 5: dvd can renew too? ${mainDvd().renew(1)}');
 }
+
 void step6() {
   print('--- Step 6 ---');
   var type = MemberType.values[seed % 3];
@@ -301,6 +321,7 @@ void step6() {
   print('Step 6: max loans = ${type.maxLoans}');
   print('Step 6: book fee $fee -> ${type.applyDiscount(fee)} after discount');
 }
+
 void step7() {
   print('--- Step 7 ---');
   var type = MemberType.values[seed % 3];
@@ -308,8 +329,11 @@ void step7() {
   List<LibraryItem> shelf = [mainBook(), mainMagazine(), mainDvd()];
   print('Step 7: ${discounted.rs}');
   print('Step 7: initials of "${titles[u]}" = ${titles[u].initials}');
-  print('Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}');
+  print(
+    'Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}',
+  );
 }
+
 void step8() {
   print('--- Step 8 ---');
   var f1 = Fine(mainBook().lateFee(daysLate));
@@ -319,20 +343,29 @@ void step8() {
   print('Step 8: equal copies? ${f1 == Fine(f1.amount)}');
   print('Step 8: set size = ${{f1, Fine(f1.amount), f2}.length}');
 }
+
 void step9() {
   print('--- Step 9 ---');
   buildShelf();
   var shelf = buildShelf();
   print('Step 9: items created = ${LibraryItem.created}');
-  print('Step 9: capped fee = ${LibraryItem.capFee(shelf.first.lateFee(daysBig))} (cap $feeCap)');
-  print('Step 9: const copies identical? ${identical(const Fine(10), const Fine(10))}');
+  print(
+    'Step 9: capped fee = ${LibraryItem.capFee(shelf.first.lateFee(daysBig))} (cap $feeCap)',
+  );
+  print(
+    'Step 9: const copies identical? ${identical(const Fine(10), const Fine(10))}',
+  );
   print('Step 9: new copies identical? ${identical(Fine(10), Fine(10))}');
 }
+
 void step10() {
   print('--- Step 10 ---');
   var shelf = buildShelf();
   var member = Member('S$seed', MemberType.values[seed % 3]);
-  Fine total = shelf.fold(Fine(0), (sum, item) => sum + member.feeFor(item, daysLate));
+  Fine total = shelf.fold(
+    Fine(0),
+    (sum, item) => sum + member.feeFor(item, daysLate),
+  );
   int b = 0;
   int r = 0;
   for (var item in shelf) {

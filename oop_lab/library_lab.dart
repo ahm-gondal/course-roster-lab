@@ -152,6 +152,25 @@ extension ShelfMath on List<LibraryItem> {
   int totalLateFee(int days) => fold(0, (sum, i) => sum + i.lateFee(days));
 }
 
+// Step 8
+class Fine {
+  final int amount;
+  const Fine(this.amount);
+
+  Fine operator +(Fine o) => Fine(amount + o.amount);
+
+  bool operator >(Fine o) => amount > o.amount;
+
+  @override
+  bool operator ==(Object other) => other is Fine && other.amount == amount;
+
+  @override
+  int get hashCode => amount.hashCode;
+
+  @override
+  String toString() => 'Fine($amount)';
+}
+
 // Think 4: extends Borrowable give nothing really because it has no body,
 // and Book already extends LibraryItem, Dart allow only one extends.
 // implements is just promise, we write own code.
@@ -164,6 +183,9 @@ extension ShelfMath on List<LibraryItem> {
 
 // Think 7: 72.rs read like normal english and IDE show it after dot,
 // it look like int have this method already.
+
+// Think 8: Without hashCode set size become 3 because two equal Fine have
+// different hash, set put them in different place. == and hashCode must agree.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -243,6 +265,14 @@ void step7() {
   print('Step 7: initials of "${titles[u]}" = ${titles[u].initials}');
   print('Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}');
 }
-void step8() { print('--- Step 8 ---'); }
+void step8() {
+  print('--- Step 8 ---');
+  var f1 = Fine(mainBook().lateFee(daysLate));
+  var f2 = Fine(mainMagazine().lateFee(daysLate));
+  print('Step 8: $f1 + $f2 = ${f1 + f2}');
+  print('Step 8: first bigger? ${f1 > f2}');
+  print('Step 8: equal copies? ${f1 == Fine(f1.amount)}');
+  print('Step 8: set size = ${{f1, Fine(f1.amount), f2}.length}');
+}
 void step9() { print('--- Step 9 ---'); }
 void step10() { print('--- Step 10 ---'); }

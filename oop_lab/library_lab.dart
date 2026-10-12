@@ -36,8 +36,16 @@ abstract class LibraryItem {
   int lateFee(int days);
 }
 
-class Book extends LibraryItem {
+// Step 4
+abstract class Borrowable {
+  bool get isAvailable;
+  void borrow();
+  void giveBack();
+}
+
+class Book extends LibraryItem implements Borrowable {
   final int pages;
+  bool _out = false;
 
   Book(super.title, super.year, this.pages);
 
@@ -46,6 +54,19 @@ class Book extends LibraryItem {
 
   @override
   int lateFee(int days) => days * feePerDay;
+
+  @override
+  bool get isAvailable => !_out;
+
+  @override
+  void borrow() {
+    _out = true;
+  }
+
+  @override
+  void giveBack() {
+    _out = false;
+  }
 }
 
 // Step 2
@@ -92,6 +113,10 @@ Dvd mainDvd() {
 // Think 3: Abstract class is not complete, lateFee() has no body.
 // So Dart dont allow object of it, only subclasse fill the body.
 
+// Think 4: extends Borrowable give nothing really because it has no body,
+// and Book already extends LibraryItem, Dart allow only one extends.
+// implements is just promise, we write own code.
+
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
   step1();
@@ -126,7 +151,20 @@ void step3() {
   print('Step 3: Magazine late fee for $daysLate days = ${mainMagazine().lateFee(daysLate)}');
   print('Step 3: Dvd late fee for $daysLate days = ${mainDvd().lateFee(daysLate)}');
 }
-void step4() { print('--- Step 4 ---'); }
+void step4() {
+  print('--- Step 4 ---');
+  var book = mainBook();
+  print('Step 4: available? ${book.isAvailable}');
+  book.borrow();
+  print('Step 4: after borrow? ${book.isAvailable}');
+  book.giveBack();
+  print('Step 4: after return? ${book.isAvailable}');
+
+  List<LibraryItem> items = [book, mainMagazine(), mainDvd()];
+  for (var item in items) {
+    print('Step 4: ${item.runtimeType} borrowable? ${item is Borrowable}');
+  }
+}
 void step5() { print('--- Step 5 ---'); }
 void step6() { print('--- Step 6 ---'); }
 void step7() { print('--- Step 7 ---'); }

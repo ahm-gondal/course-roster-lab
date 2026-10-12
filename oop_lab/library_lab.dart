@@ -24,14 +24,16 @@ final int renewAttempts = 2 + u;            // renewal attempts made in Step 5
 final int shelfSize = 3 + u % 4;            // items on the shelf in Steps 9-10
 // ===========================================================================
 
-// Step 1, 2
-class LibraryItem {
+// Step 1, 2, 3
+abstract class LibraryItem {
   final String title;
   final int year;
 
   LibraryItem(this.title, this.year);
 
   String describe() => '$title ($year)';
+
+  int lateFee(int days);
 }
 
 class Book extends LibraryItem {
@@ -41,6 +43,9 @@ class Book extends LibraryItem {
 
   @override
   String describe() => '${super.describe()}, $pages pages';
+
+  @override
+  int lateFee(int days) => days * feePerDay;
 }
 
 // Step 2
@@ -51,15 +56,31 @@ class Magazine extends LibraryItem {
 
   @override
   String describe() => '$title, issue $issue';
+
+  @override
+  int lateFee(int days) => days * (feePerDay ~/ 2);
 }
 
+// Step 3
+class Dvd extends LibraryItem {
+  final int minutes;
+
+  Dvd(super.title, super.year, this.minutes);
+ @override
+  String describe() => '${super.describe()}, $minutes min';
+ @override
+  int lateFee(int days) => days * feePerDay * 2;
+}
 Book mainBook() {
   return Book(titles[u], yearOf(u), 100 + 3 * seed);
 }
-
 Magazine mainMagazine() {
   int i = (u + 1) % 10;
   return Magazine(titles[i], yearOf(i), 1 + (t + u) % 12);
+}
+Dvd mainDvd() {
+  int i = (u + 2) % 10;
+  return Dvd(titles[i], yearOf(i), 90 + seed % 40);
 }
 
 // Think 1: item type is LibraryItem so compiler only see title and year.
@@ -67,6 +88,9 @@ Magazine mainMagazine() {
 
 // Think 2: Without @override and name descibe() it become new method.
 // describe() of parent run so pages not print, no error show.
+
+// Think 3: Abstract class is not complete, lateFee() has no body.
+// So Dart dont allow object of it, only subclasse fill the body.
 
 void main() {
   print('Seed: $seed (t=$t, u=$u)');
@@ -96,7 +120,12 @@ void step2() {
   print('Step 2: ${mainBook().describe()}');
   print('Step 2: ${mainMagazine().describe()}');
 }
-void step3() { print('--- Step 3 ---'); }
+void step3() {
+  print('--- Step 3 ---');
+  print('Step 3: Book late fee for $daysLate days = ${mainBook().lateFee(daysLate)}');
+  print('Step 3: Magazine late fee for $daysLate days = ${mainMagazine().lateFee(daysLate)}');
+  print('Step 3: Dvd late fee for $daysLate days = ${mainDvd().lateFee(daysLate)}');
+}
 void step4() { print('--- Step 4 ---'); }
 void step5() { print('--- Step 5 ---'); }
 void step6() { print('--- Step 6 ---'); }

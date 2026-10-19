@@ -50,7 +50,24 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Study Tracker: $course')),
-      body: StudentCard(name: studentName, roll: rollNo, course: course),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            StudentCard(name: studentName, roll: rollNo, course: course),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Start: $startCount', key: const Key('info-start')),
+                Text('Step: $stepSize', key: const Key('info-step')),
+                Text('Max: $maxCount', key: const Key('info-max')),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -92,6 +109,9 @@ class StudentCard extends StatelessWidget {
 // Think 2: Widget is immutable, Flutter make new widget on every rebuild so
 // fields are final. If final removed, const constructor give error and
 // analyzer say the class is @immutable but field is not final.
+
+// Think 3: LabApp > MaterialApp > HomePage > Scaffold > SingleChildScrollView
+// > Column > Row > Text('Max: ..'). So Text is 8 levels deep.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {

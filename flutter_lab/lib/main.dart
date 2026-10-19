@@ -30,6 +30,7 @@ final List<String> lifecycleLog = <String>[];
 void main() => runApp(const LabApp());
 
 // Keep the name LabApp and its const constructor: the checker uses them.
+// Stateless: it only set up MaterialApp, nothing change here.
 class LabApp extends StatelessWidget {
   const LabApp({super.key});
 
@@ -43,6 +44,7 @@ class LabApp extends StatelessWidget {
 }
 
 // Step 1
+// Stateless: only arrange the page, changing parts are inside Tally and Countdown.
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -82,6 +84,7 @@ class HomePage extends StatelessWidget {
 // MaterialApp home only get the first screen (HomePage) shown inside the app.
 
 // Step 2
+// Stateless: show only name, roll and course it get, never change.
 class StudentCard extends StatelessWidget {
   final String name;
   final String roll;
@@ -120,6 +123,7 @@ class StudentCard extends StatelessWidget {
 // > Column > Row > Text('Max: ..'). So Text is 8 levels deep.
 
 // Step 4
+// Stateless: only show count and max that parent give it.
 class GoalBanner extends StatelessWidget {
   final int count;
   final int max;
@@ -140,6 +144,7 @@ class GoalBanner extends StatelessWidget {
 // To show new count the parent must build it again with the new count.
 
 // Step 5
+// Stateful: _count change when buttons pressed.
 class Tally extends StatefulWidget {
   const Tally({super.key});
 
@@ -213,6 +218,7 @@ class _TallyState extends State<Tally> {
 // screen still show 0, because build never run again without setState.
 
 // Step 8
+// Stateful: _left and _builds change every second by the timer.
 class Countdown extends StatefulWidget {
   const Countdown({super.key});
 
@@ -266,6 +272,7 @@ class _CountdownState extends State<Countdown> {
 // Countdown is removed, or with a button that print it.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
+// Stateful: _clicks change on every tap.
 class BuggyCounter extends StatefulWidget {
   const BuggyCounter({super.key});
 

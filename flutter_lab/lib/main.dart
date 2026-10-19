@@ -149,6 +149,20 @@ class _TallyState extends State<Tally> {
   void _plus() {
     setState(() {
       _count += stepSize;
+      if (_count > maxCount) _count = maxCount;
+    });
+  }
+
+  void _minus() {
+    setState(() {
+      _count -= stepSize;
+      if (_count < 0) _count = 0;
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _count = startCount;
     });
   }
 
@@ -166,6 +180,18 @@ class _TallyState extends State<Tally> {
               onPressed: _plus,
               child: Text('+$stepSize'),
             ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              key: const Key('minus'),
+              onPressed: _minus,
+              child: Text('-$stepSize'),
+            ),
+            const SizedBox(width: 8),
+            OutlinedButton(
+              key: const Key('reset'),
+              onPressed: _reset,
+              child: const Text('Reset'),
+            ),
           ],
         ),
       ],
@@ -175,6 +201,9 @@ class _TallyState extends State<Tally> {
 
 // Think 5: Tally widget is only configuration, Flutter throw it away and make
 // new one on rebuild. _TallyState stay alive and keep _count in memory.
+
+// Think 6: Hot reload keep the State so count stay 12, only widget code change.
+// Hot restart make everything new, new State too, so count go back to start 5.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {

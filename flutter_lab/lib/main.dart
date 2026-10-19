@@ -65,6 +65,8 @@ class HomePage extends StatelessWidget {
                 Text('Max: $maxCount', key: const Key('info-max')),
               ],
             ),
+            const SizedBox(height: 12),
+            GoalBanner(count: startCount, max: maxCount),
           ],
         ),
       ),
@@ -112,6 +114,26 @@ class StudentCard extends StatelessWidget {
 
 // Think 3: LabApp > MaterialApp > HomePage > Scaffold > SingleChildScrollView
 // > Column > Row > Text('Max: ..'). So Text is 8 levels deep.
+
+// Step 4
+class GoalBanner extends StatelessWidget {
+  final int count;
+  final int max;
+
+  const GoalBanner({super.key, required this.count, required this.max});
+
+  @override
+  Widget build(BuildContext context) {
+    final percent = count * 100 ~/ max;
+    return Text(
+      'Progress: $count of $max ($percent%)',
+      key: const Key('progress'),
+    );
+  }
+}
+
+// Think 4: GoalBanner have no own changing data, it only show what it get.
+// To show new count the parent must build it again with the new count.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {

@@ -223,10 +223,12 @@ class Countdown extends StatefulWidget {
 class _CountdownState extends State<Countdown> {
   late int _left;
   late Timer _timer;
+  int _builds = 0;
 
   @override
   void initState() {
     super.initState();
+    lifecycleLog.add('initState');
     _left = startSeconds;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() => _left--);
@@ -237,20 +239,31 @@ class _CountdownState extends State<Countdown> {
   @override
   void dispose() {
     _timer.cancel();
+    lifecycleLog.add('dispose');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_left > 0) {
-      return Text('Time left: ${_left}s', key: const Key('time-left'));
-    }
-    return const Text('Time is up!', key: Key('time-left'));
+    _builds++;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _left > 0
+            ? Text('Time left: ${_left}s', key: const Key('time-left'))
+            : const Text('Time is up!', key: Key('time-left')),
+        Text('Builds: $_builds', key: const Key('builds')),
+      ],
+    );
   }
 }
 
 // Think 8: Console show error "setState() called after dispose()" because
 // timer keep running and call setState on a State that is already removed.
+
+// Think 9: Timer call setState only one time per second so build run once
+// per second. To prove dispose ran, print lifecycleLog in parent after
+// Countdown is removed, or with a button that print it.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {

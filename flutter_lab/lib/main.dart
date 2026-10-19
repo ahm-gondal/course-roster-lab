@@ -68,6 +68,8 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 12),
             const Tally(),
             const SizedBox(height: 12),
+            const Countdown(),
+            const SizedBox(height: 12),
             const BuggyCounter(),
           ],
         ),
@@ -209,6 +211,46 @@ class _TallyState extends State<Tally> {
 
 // Think 7: Before fix, after 3 taps _clicks inside State was 9 (3 x 3) but
 // screen still show 0, because build never run again without setState.
+
+// Step 8
+class Countdown extends StatefulWidget {
+  const Countdown({super.key});
+
+  @override
+  State<Countdown> createState() => _CountdownState();
+}
+
+class _CountdownState extends State<Countdown> {
+  late int _left;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _left = startSeconds;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() => _left--);
+      if (_left <= 0) timer.cancel();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_left > 0) {
+      return Text('Time left: ${_left}s', key: const Key('time-left'));
+    }
+    return const Text('Time is up!', key: Key('time-left'));
+  }
+}
+
+// Think 8: Console show error "setState() called after dispose()" because
+// timer keep running and call setState on a State that is already removed.
 
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {

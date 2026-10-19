@@ -67,6 +67,8 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Tally(),
+            const SizedBox(height: 12),
+            const BuggyCounter(),
           ],
         ),
       ),
@@ -205,6 +207,9 @@ class _TallyState extends State<Tally> {
 // Think 6: Hot reload keep the State so count stay 12, only widget code change.
 // Hot restart make everything new, new State too, so count go back to start 5.
 
+// Think 7: Before fix, after 3 taps _clicks inside State was 9 (3 x 3) but
+// screen still show 0, because build never run again without setState.
+
 // ---- Provided for Step 7. It has a bug on purpose. Do not rename anything.
 class BuggyCounter extends StatefulWidget {
   const BuggyCounter({super.key});
@@ -225,7 +230,9 @@ class _BuggyCounterState extends State<BuggyCounter> {
         ElevatedButton(
           key: const Key('bug-button'),
           onPressed: () {
-            _clicks += bugStep;
+            setState(() {
+              _clicks += bugStep;
+            });
           },
           child: Text('+$bugStep'),
         ),

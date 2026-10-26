@@ -106,6 +106,8 @@ class HomePage extends StatelessWidget {
             const SummaryRow(),
             const SizedBox(height: 12),
             const ShareRow(),
+            const SizedBox(height: 12),
+            const InfoBox(),
           ],
         ),
       ),
@@ -396,3 +398,27 @@ class ShareRow extends StatelessWidget {
 
 // Think 8: If swapped, Flex button would stretch to fill its share and Exp
 // button stay small at natural size. Expanded is "Flexible with fit: tight".
+
+// Step 9
+class InfoBox extends StatelessWidget {
+  const InfoBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const Key('info-box'),
+      margin: EdgeInsets.all(boxMargin),
+      padding: EdgeInsets.all(boxPad),
+      decoration: BoxDecoration(
+        color: swatches[hue]!.shade100,
+        borderRadius: BorderRadius.circular(boxRadius),
+        border: Border.all(width: boxRadius),
+      ),
+      child: Text('Course: $course', key: const Key('box-text')),
+    );
+  }
+}
+
+// Think 9: Padding is inside the border, margin is outside. Plain Padding when
+// we only need space around, SizedBox when only need size or a gap, they are
+// lighter than full Container.

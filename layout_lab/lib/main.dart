@@ -95,7 +95,11 @@ class HomePage extends StatelessWidget {
           children: [
             const SettingsCard(),
             const SizedBox(height: 12),
+            const Welcome(),
+            const SizedBox(height: 12),
             const Clock(),
+            const SizedBox(height: 12),
+            Row(children: [Tile(tileA), Tile(tileB), Tile(tileC)]),
           ],
         ),
       ),
@@ -226,3 +230,40 @@ class Probe extends StatelessWidget {
 // Think 3: Widget is cheap and thrown away, a new one is made on every build.
 // Element stay in the tree and keep the State. Third one is RenderObject, it
 // is under the Element and its job is layout and painting on the screen.
+
+// Step 4
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Welcome, $studentName', key: Key('welcome')),
+    );
+  }
+}
+
+class Tile extends StatefulWidget {
+  const Tile(this.label, {super.key});
+
+  final String label;
+
+  @override
+  State<Tile> createState() => _TileState();
+}
+
+class _TileState extends State<Tile> {
+  int taps = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => setState(() => taps++),
+      child: Text('${widget.label}: $taps'),
+    );
+  }
+}
+
+// Think 4: It is called composition. We put small widgets inside each other
+// instead of extending ElevatedButton. Flutter prefer it because it is simple,
+// we dont need to know inside of ElevatedButton and small widgets can reuse.

@@ -108,6 +108,8 @@ class HomePage extends StatelessWidget {
             const ShareRow(),
             const SizedBox(height: 12),
             const InfoBox(),
+            const SizedBox(height: 12),
+            const StampStack(),
           ],
         ),
       ),
@@ -422,3 +424,37 @@ class InfoBox extends StatelessWidget {
 // Think 9: Padding is inside the border, margin is outside. Plain Padding when
 // we only need space around, SizedBox when only need size or a gap, they are
 // lighter than full Container.
+
+// Step 10
+class StampStack extends StatelessWidget {
+  const StampStack({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      key: const Key('stack'),
+      children: [
+        Container(
+          key: const Key('layer-base'),
+          width: 300,
+          height: 120,
+          color: Colors.grey.shade300,
+        ),
+        Positioned(
+          top: dotTop,
+          right: dotRight,
+          child: const Icon(Icons.star, key: Key('dot-top')),
+        ),
+        Positioned(
+          bottom: dotBottom,
+          left: dotLeft,
+          child: const Icon(Icons.circle, key: Key('dot-bottom')),
+        ),
+      ],
+    );
+  }
+}
+
+// Think 10: Size of Stack is decided by the biggest not positioned child, here
+// the grey Container 300 x 120. If Icons come first and grey Container last,
+// the grey box paint on top and hide the icons.

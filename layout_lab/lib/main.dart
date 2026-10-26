@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 12),
             const Clock(),
             const SizedBox(height: 12),
-            Row(children: [Tile(tileA), Tile(tileB), Tile(tileC)]),
+            const SwapBoard(),
           ],
         ),
       ),
@@ -267,3 +267,40 @@ class _TileState extends State<Tile> {
 // Think 4: It is called composition. We put small widgets inside each other
 // instead of extending ElevatedButton. Flutter prefer it because it is simple,
 // we dont need to know inside of ElevatedButton and small widgets can reuse.
+
+// Step 5
+class SwapBoard extends StatefulWidget {
+  const SwapBoard({super.key});
+
+  @override
+  State<SwapBoard> createState() => _SwapBoardState();
+}
+
+class _SwapBoardState extends State<SwapBoard> {
+  var tiles = [
+    Tile(tileA, key: ValueKey(tileA)),
+    Tile(tileB, key: ValueKey(tileB)),
+    Tile(tileC, key: ValueKey(tileC)),
+  ];
+
+  void swap() => setState(() => tiles = tiles.reversed.toList());
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(children: tiles),
+        ElevatedButton(
+          key: const Key('swap'),
+          onPressed: swap,
+          child: const Text('Swap'),
+        ),
+      ],
+    );
+  }
+}
+
+// Think 5: Without key Flutter match by type and position. All three are Tile,
+// so the Element at the left stay there with its State (taps). Only the new
+// widget with new label is given to that old Element, so label move but
+// number stay at left.

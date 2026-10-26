@@ -104,6 +104,8 @@ class HomePage extends StatelessWidget {
             const InfoPanel(),
             const SizedBox(height: 12),
             const SummaryRow(),
+            const SizedBox(height: 12),
+            const ShareRow(),
           ],
         ),
       ),
@@ -356,3 +358,41 @@ class InfoPanel extends StatelessWidget {
 // Think 6: In Column the main axis is vertical (top to bottom). Cross axis is
 // horizontal, so crossAxisAlignment center move children left or right, not up
 // or down.
+
+// Step 8
+class ShareRow extends StatelessWidget {
+  const ShareRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      key: const Key('share-row'),
+      children: [
+        SizedBox(
+          key: const Key('fixed'),
+          width: fixedW,
+          child: ElevatedButton(onPressed: () {}, child: const Text('F')),
+        ),
+        Expanded(
+          flex: flexA,
+          child: ElevatedButton(
+            key: const Key('exp'),
+            onPressed: () {},
+            child: const Text('Exp'),
+          ),
+        ),
+        Flexible(
+          flex: flexB,
+          child: ElevatedButton(
+            key: const Key('flex'),
+            onPressed: () {},
+            child: const Text('Flex'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Think 8: If swapped, Flex button would stretch to fill its share and Exp
+// button stay small at natural size. Expanded is "Flexible with fit: tight".

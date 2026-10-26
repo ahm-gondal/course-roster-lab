@@ -187,6 +187,7 @@ class _ClockState extends State<Clock> {
       children: [
         Text('Session: $_seconds s', key: const Key('clock')),
         Text('Builds: $_builds', key: const Key('builds')),
+        Probe(seconds: _seconds),
       ],
     );
   }
@@ -199,3 +200,29 @@ class _ClockState extends State<Clock> {
 // Think 2: Timer call setState only one time per second, so build run once
 // per second. If _timer.cancel() is missing, console show error
 // "setState() called after dispose()" when the widget leave the screen.
+
+// Step 3
+class Probe extends StatelessWidget {
+  final int seconds;
+
+  const Probe({super.key, required this.seconds});
+
+  @override
+  Widget build(BuildContext context) {
+    final above = context.findAncestorWidgetOfExactType<Scaffold>() != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Seen at: $seconds s', key: const Key('probe-seen')),
+        Text('Widget #${identityHashCode(this)}', key: const Key('probe-widget')),
+        Text('Element #${identityHashCode(context)}', key: const Key('probe-element')),
+        Text('Context belongs to: ${context.widget.runtimeType}', key: const Key('probe-context')),
+        Text('Scaffold above me: $above', key: const Key('probe-above')),
+      ],
+    );
+  }
+}
+
+// Think 3: Widget is cheap and thrown away, a new one is made on every build.
+// Element stay in the tree and keep the State. Third one is RenderObject, it
+// is under the Element and its job is layout and painting on the screen.

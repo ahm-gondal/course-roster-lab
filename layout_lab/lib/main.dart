@@ -100,6 +100,8 @@ class HomePage extends StatelessWidget {
             const Clock(),
             const SizedBox(height: 12),
             const SwapBoard(),
+            const SizedBox(height: 12),
+            const InfoPanel(),
           ],
         ),
       ),
@@ -304,3 +306,40 @@ class _SwapBoardState extends State<SwapBoard> {
 // so the Element at the left stay there with its State (taps). Only the new
 // widget with new label is given to that old Element, so label move but
 // number stay at left.
+
+// Step 6
+class InfoPanel extends StatelessWidget {
+  const InfoPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          key: const Key('info-row'),
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text('Start: $startSec s', key: const Key('row-a')),
+            Text('Tick: $tick s', key: const Key('row-b')),
+            Text('Stop: $stopAt s', key: const Key('row-c')),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Column(
+          key: const Key('info-col'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name: $studentName', key: const Key('col-a')),
+            Text('Roll no: $rollNo', key: const Key('col-b')),
+            Text('Course: $course', key: const Key('col-c')),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// Think 6: In Column the main axis is vertical (top to bottom). Cross axis is
+// horizontal, so crossAxisAlignment center move children left or right, not up
+// or down.
